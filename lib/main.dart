@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter2627/pages/nuevo_gasto_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,9 +17,7 @@ class MyApp extends StatelessWidget {
 
       // Tema general de la aplicación.
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
 
       home: const InicioPage(),
@@ -33,7 +32,6 @@ class InicioPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       // Barra superior.
       appBar: AppBar(
         title: const Text('Control de Gastos'),
@@ -49,7 +47,6 @@ class InicioPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               // Icono principal.
               const Icon(
                 Icons.account_balance_wallet,
@@ -62,10 +59,7 @@ class InicioPage extends StatelessWidget {
               // Título.
               const Text(
                 'Bienvenido',
-                style: TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 20),
@@ -75,10 +69,7 @@ class InicioPage extends StatelessWidget {
                 'Gestiona tus gastos personales\n'
                 'de forma sencilla y eficiente.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey[700],
-                ),
+                style: TextStyle(fontSize: 18, color: Colors.grey[700]),
               ),
 
               const SizedBox(height: 40),
@@ -90,13 +81,18 @@ class InicioPage extends StatelessWidget {
 
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // En esta unidad todavía no realiza ninguna acción.
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NuevoGastoPage(),
+                      ),
+                    );
                   },
 
                   icon: const Icon(Icons.add),
 
                   label: const Text(
-                    'Nuevo gasto',
+                    'Nuevo Gasto',
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
@@ -111,21 +107,14 @@ class InicioPage extends StatelessWidget {
         currentIndex: 0,
 
         items: const [
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Inicio',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
 
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: 'Estadísticas',
           ),
 
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Ajustes',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ajustes'),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter2627/models/gasto.dart';
 
 class NuevoGastoPage extends StatefulWidget {
   const NuevoGastoPage({super.key});
@@ -175,11 +176,16 @@ class _NuevoGastoPageState extends State<NuevoGastoPage> {
                 child: ElevatedButton.icon(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Gasto guardado correctamente'),
-                        ),
+                      // Crea un nuevo objeto Gasto con los datos introducidos.
+                      Gasto nuevoGasto = Gasto(
+                        descripcion: _descripcionController.text,
+                        importe: double.parse(_importeController.text),
+                        categoria: _categoria!,
+                        fecha: _fecha,
+                        pagado: _pagado,
                       );
+                      // Devuelve el objeto a la pantalla principal.
+                      Navigator.pop(context, nuevoGasto);
                     }
                   },
                   icon: const Icon(Icons.save),

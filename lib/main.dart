@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter2627/pages/nuevo_gasto_page.dart';
 import 'package:flutter2627/models/gasto.dart';
+import 'package:flutter2627/database/database_helper.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,6 +38,27 @@ class InicioPage extends StatefulWidget {
 class _InicioPageState extends State<InicioPage> {
   // Lista de gastos (inicialmente vacía).
   final List<Gasto> gastos = [];
+  // Objeto encargado de gestionar la base de datos.
+  final DatabaseHelper dbHelper = DatabaseHelper();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Carga los gastos al iniciar la aplicación.
+    cargarGastos();
+  }
+
+  // Recupera todos los gastos almacenados en SQLite.
+  Future<void> cargarGastos() async {
+    // Obtiene los registros de la base de datos.
+    final datos = await dbHelper.obtenerGastos();
+    // Actualiza la colección utilizada por la interfaz.
+    setState(() {
+      gastos.clear();
+      gastos.addAll(datos.map((map) => Gasto.fromMap(map)).toList());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,13 +146,25 @@ class _InicioPageState extends State<InicioPage> {
                       // Icono para eliminar el gasto.
                       icon: const Icon(Icons.delete, color: Colors.red),
 
-                      onPressed: () {
-                        // Elimina el gasto seleccionado.
-                        setState(() {
-                          gastos.removeAt(index);
-                        });
+                      onPressed: () async {
+                        // Elimina el gasto de la base de datos.
+                        await dbHelper.eliminarGasto(gasto.id!);
+
+                        // Recarga la lista desde SQLite.
+                        cargarGastos();
                       },
                     ),
+                    onTap: () async {
+                      // Abre el formulario en modo edición.
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NuevoGastoPage(gasto: gasto),
+                        ),
+                      );
+                      // Recarga la información almacenada en SQLite.
+                      cargarGastos();
+                    },
                   ),
                 );
               },
@@ -138,18 +172,14 @@ class _InicioPageState extends State<InicioPage> {
       // Botón flotante para añadir un nuevo gasto.
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Abre el formulario y espera el objeto devuelto.
-          final Gasto? nuevoGasto = await Navigator.push(
+          // Abre el formulario de alta de un nuevo gasto.
+          await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const NuevoGastoPage()),
           );
 
-          // Si se ha recibido un gasto, lo añade a la colección.
-          if (nuevoGasto != null) {
-            setState(() {
-              gastos.add(nuevoGasto);
-            });
-          }
+          // Recarga los gastos almacenados en SQLite.
+          cargarGastos();
         },
 
         child: const Icon(Icons.add),

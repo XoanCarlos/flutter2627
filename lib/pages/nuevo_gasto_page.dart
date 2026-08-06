@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter2627/models/gasto.dart';
+import 'package:flutter2627/database/database_helper.dart';
 
 class NuevoGastoPage extends StatefulWidget {
-  const NuevoGastoPage({super.key});
+  // Gasto que se desea editar.
+  // Será nulo cuando se cree un nuevo gasto.
+  final Gasto? gasto;
+  const NuevoGastoPage({super.key, this.gasto});
 
   @override
   State<NuevoGastoPage> createState() => _NuevoGastoPageState();
@@ -16,6 +20,9 @@ class _NuevoGastoPageState extends State<NuevoGastoPage> {
   final TextEditingController _descripcionController = TextEditingController();
 
   final TextEditingController _importeController = TextEditingController();
+
+  // Objeto encargado de gestionar la base de datos.
+  final DatabaseHelper dbHelper = DatabaseHelper();
 
   // Categoría seleccionada por el usuario.
   String? _categoria;
@@ -36,6 +43,19 @@ class _NuevoGastoPageState extends State<NuevoGastoPage> {
     'Servicios',
     'Otros',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.gasto != null) {
+      _descripcionController.text = widget.gasto!.descripcion;
+      _importeController.text = widget.gasto!.importe.toString();
+      _categoria = widget.gasto!.categoria;
+      _fecha = widget.gasto!.fecha;
+      _pagado = widget.gasto!.pagado;
+    }
+  }
 
   // Muestra el selector de fechas.
   Future<void> _seleccionarFecha() async {
@@ -174,18 +194,42 @@ class _NuevoGastoPageState extends State<NuevoGastoPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {
+                  onPressed: () async {
+                    // Comprueba que todos los datos del formulario son válidos.
                     if (_formKey.currentState!.validate()) {
-                      // Crea un nuevo objeto Gasto con los datos introducidos.
-                      Gasto nuevoGasto = Gasto(
+                      // Crea el objeto Gasto con los datos del formulario.
+                      Gasto gasto = Gasto(
+                        id: widget.gasto?.id,
                         descripcion: _descripcionController.text,
                         importe: double.parse(_importeController.text),
                         categoria: _categoria!,
                         fecha: _fecha,
                         pagado: _pagado,
                       );
-                      // Devuelve el objeto a la pantalla principal.
-                      Navigator.pop(context, nuevoGasto);
+
+                      // Si existe un gasto, se actualiza.
+                      if (widget.gasto != null) {
+                        await dbHelper.actualizarGasto(gasto);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Gasto modificado correctamente'),
+                          ),
+                        );
+                      }
+                      // En caso contrario, se inserta un nuevo gasto.
+                      else {
+                        await dbHelper.insertarGasto(gasto);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Gasto guardado correctamente'),
+                          ),
+                        );
+                      }
+
+                      // Regresa a la pantalla principal.
+                      Navigator.pop(context);
                     }
                   },
                   icon: const Icon(Icons.save),

@@ -45,7 +45,7 @@ class Gasto {
       'descripcion': descripcion,
 
       // Importe del gasto.
-      'importe': importe, 
+      'importe': importe,
 
       // Categoría del gasto.
       'categoria': categoria,

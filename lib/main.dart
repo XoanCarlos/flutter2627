@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter2627/pages/listado_gastos_page.dart';
+import 'package:flutter2627/pages/register_page.dart';
+import 'package:flutter2627/pages/login_page.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -52,20 +55,41 @@ class _InicioPageState extends State<InicioPage> {
               ),
 
               const SizedBox(height: 40),
-
               SizedBox(
                 width: double.infinity,
                 height: 60,
                 child: ElevatedButton.icon(
-                  icon: const Icon(Icons.payments),
-                  label: const Text('Gastos', style: TextStyle(fontSize: 20)),
+                  icon: const Icon(Icons.login),
+                  label: const Text(
+                    'Iniciar sesión',
+                    style: TextStyle(fontSize: 20),
+                  ),
                   onPressed: () {
-                    print("Botón pulsado");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ListadoGastosPage(),
+                        builder: (context) => const LoginPage(),
                       ),
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              SizedBox(
+                width: double.infinity,
+                height: 60,
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.person_add),
+                  label: const Text(
+                    'Registrarse',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegistroPage()),
                     );
                   },
                 ),

@@ -38,6 +38,7 @@ dependencies:
   sqflite: ^2.4.2 
   # Gestiona las rutas donde se almacenará la base de datos. 
   path: ^1.9.1 
+  http: ^1.6.0
   
 
 dev_dependencies:
